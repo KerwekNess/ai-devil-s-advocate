@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IDEA KILLER | Адвокат Дьявола</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #ffffff;
+        --muted: #888;
+        --card: rgba(20, 20, 20, 0.9);
+        --accent: #ff1a1a;
+        --bg-dark: #0a0a0a;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { 
+        margin: 0; 
+        min-height: 100%; 
+        background-color: var(--bg-dark);
+        user-select: none; /* 5. No-copy */
+        -webkit-user-select: none;
+      }
+
+      body {
+        font-family: 'Oswald', sans-serif;
+        color: var(--ink);
+        overflow-x: hidden;
+        background: radial-gradient(circle at center, #1a0000 0%, #0a0a0a 100%);
+        transition: background 0.5s ease;
+      }
+
+      /* 1. Red strip: Full screen overlay */
+      body::after {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0;
+        background: radial-gradient(circle at bottom, var(--accent), transparent 70%);
+        opacity: 0;
+        z-index: 1;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+
+      /* 4. Heat-up effect */
+      body.is-thinking::after {
+        opacity: 0.6;
+        animation: heatPulse 5s ease-in-out infinite;
+      }
+
+      @keyframes heatPulse {
+        0% { height: 0%; opacity: 0; }
+        20% { height: 40%; opacity: 0.6; } 
+        100% { height: 60%; opacity: 0; } 
+      }
+
+      /* 4. Particles (Blobs) */
+      .blobs {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.15;
+        animation: floaty 15s ease-in-out infinite;
+      }
+
+      @keyframes floaty {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(50px, 50px); }
+      }
+
+      .blob-1 { width: 400px; height: 400px; left: -10%; top: 10%; background: #ff1a1a; }
+      .blob-2 { width: 300px; height: 300px; right: 5%; top: 20%; background: #800000; animation-delay: -2s; }
+      .blob-3 { width: 500px; height: 500px; left: 20%; bottom: 10%; background: #4a0000; animation-delay: -5s; }
+      .blob-4 { width: 250px; height: 250px; right: 10%; bottom: 20%; background: #ff4d4d; animation-delay: -7s; }
+      .blob-5 { width: 350px; height: 350px; left: 30%; top: 40%; background: #660000; }
+
+      main {
+        position: relative;
+        z-index: 10;
+        width: min(700px, calc(100% - 40px));
+        margin: 10vh auto; 
+        padding: 40px;
+        background: var(--card);
+        border: 1px solid rgba(255, 26, 26, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(20px);
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0 0 10px;
+        text-align: center;
+        background: linear-gradient(to bottom, #ffffff, #ff1a1a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: var(--muted);
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+      }
+
+      /* 2. Mode Switcher */
+      .mode-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+
+      .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #333;
+        transition: .4s;
+        border-radius: 34px;
+        border: 1px solid #555;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--accent);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      form { display: grid; gap: 20px; }
+
+      /* 6. Textarea: No handle, auto-resize */
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: white;
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.1rem;
+        outline: none;
+        resize: none; /* No handle */
+        overflow: hidden; /* Hide scrollbar */
+        transition: border-color 0.3s;
+    }
+
+      textarea:focus { border-color: var(--accent); }
+
+      /* 2. Buttons: Subdued Gray style */
+      button {
+        background: #222; 
+        color: white;
+        border: 1px solid #444;
+        padding: 18px;
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s;
+        letter-spacing: 2px;
+      }
+
+      button:hover { 
+        background: #333;
+        border-color: var(--accent); 
+        color: var(--accent);
+        box-shadow: 0 0 15px rgba(255, 26, 26, 0.4);
+      }
+
+      button:disabled { background: #111; color: #555; border-color: #222; }
+
+      #result { margin-top: 40px; }
+
+      /* 2. Answer Clouds */
+      .critique-item {
+        position: relative;
+        background: rgba(30, 30, 30, 0.9);
+        padding: 20px 25px;
+        border-radius: 25px;
+        margin-bottom: 20px;
+        font-size: (--ink, 1.2rem);
+        line-height: 1.4;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        animation: fadeUp 0.5s ease-out forwards;
+      }
+
+      /* The "Tail" of the cloud */
+      .critique-item::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 30px;
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: rgba(30, 30, 30, 0.9) transparent;
+      }
+
+      .critique-item:hover {
+        transform: scale(1.02);
+        background: rgba(40, 40, 40, 1);
+      }
+      
+      .critique-item:active {
+        transform: scale(0.98);
+      }
+
+      .error { color: var(--accent); text-align: center; padding: 20px; }
+
+      .loader {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-bottom-color: #fff;
+        border-radius: 50%;
+        display: inline-block;
+        animation: rotation 1s linear infinite;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+
+      @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+      /* 5. Copy Hint */
+      .copy-hint {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #555;
+        margin-top: 10px;
+        letter-spacing: 1px;
+      }
+
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+    </style>
+  </head>
+  <body id="mainBody">
+    <div class="blobs" id="blobContainer">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+      <div class="blob blob-5"></div>
+      <div class="blob" style="width:150px; height:150px; left:10%; top:40%; background:#ff1a1a; opacity:0.1;"></div>
+      <div class="blob" style="width:200px; height:200px; right:20%; top:10%; background:#4a0000; opacity:0.1;"></div>
+      <div class="blob" style="width:100px; height:100px; left:50%; bottom:30%; background:#ff1a1a; opacity:0.1;"></div>
+      <div class="blob" style="width:300px; height:300px; left:5%; bottom:5%; background:#800000; opacity:0.1;"></div>
+      <div class="blob" style="width:250px; height:250px; right:5%; top:50%; background:#ff1a1a; opacity:0.1;"></div>
+    </div>
+
+    <main>
+      <h1>УБИЙЦА ИДЕЙ</h1>
+      <p class="subtitle">Введи свою идею. Пусть Дьявол найдет в ней дыры.</p>
+
+      <!-- 2. Mode Switcher -->
+      <div class="mode-container">
+        <span>Формальный</span>
+        <label class="switch">
+          <input type="checkbox" id="modeToggle">
+          <span class="slider"></span>
+        </label>
+        <span>Прожарка</span>
+      </div>
+
+      <form id="ideaForm">
+        <textarea id="ideaInput" placeholder="Например: 'Хочу бросить работу и открыть кофейню'..." required></textarea>
+        <button type="submit" id="submitBtn">Убить мою идею</button>
+      </form>
+
+      <div id="result"></div>
+      <!-- 5. Copy Hint -->
+      <div class="copy-hint">Нажми на облако, чтобы скопировать текст</div>
+    </main>
+
+    <script>
+      const form = document.getElementById('ideaForm');
+      const btn = document.getElementById('submitBtn');
+      const resultDiv = document.getElementById('result');
+      const ideaInput = document.getElementById('ideaInput');
+      const body = document.body;
+      const modeToggle = document.getElementById('modeToggle');
+      const blobs = document.querySelectorAll('.blob');
+
+      // 6. Auto-resize Textarea
+      ideaInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+      });
+
+      // 4. Parallax Background
+      document.addEventListener('mousemove', (e) => {
+        const moveX = (e.clientX / window.innerWidth - 0.5) * 30;
+        const moveY = (e.clientY / window.innerHeight - 0.5) * 30;
+        
+        blobs.forEach((blob, index) => {
+          const speed = (index + 1) * 0.1;
+          blob.style.transform = `translate(${moveX * speed}px, ${moveY * speed}px)`;
+        });
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const idea = ideaInput.value.trim();
+        if (!idea) return;
+
+        const mode = modeToggle.checked ? 'roast' : 'formal';
+        
+        resultDiv.innerHTML = '';
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loader"></span> Дьявол размышляет...';
+        
+        body.classList.add('is-thinking');
+
+        try {
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idea, mode })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Дьявол не явился.');
+          }
+
+          resultDiv.innerHTML = '';
+          data.items.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'critique-item';
+            div.style.animationDelay = (index * 0.15) + 's';
+            div.textContent = item;
+            
+            // 5. Click-to-Copy
+            div.addEventListener('click', () => {
+              navigator.clipboard.writeText(item).then(() => {
+                const originalText = div.textContent;
+                div.textContent = '✅ СКОПИРОВАНО!';
+                div.style.borderColor = '#00ff00';
+                setTimeout(() => {
+                  div.textContent = originalText;
+                  div.style.borderColor = '';
+                }, 800);
+              });
+            });
+
+            resultDiv.appendChild(div);
+          });
+
+        } catch (err) {
+          resultDiv.innerHTML = `<div class="error">🔥 ${err.message}</div>`;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Убить мою идею';
+          
+          setTimeout(() => {
+            body.classList.remove('is-thinking');
+          }, 100); 
+        }
+      });
+    </script>
+  </body>
+</html>
